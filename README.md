@@ -2,6 +2,10 @@
 
 url：<https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques>  
 
+## 环境  
+
+本地环境使用CODA 13.0以及对应的Pytorch预发布版本
+
 ## Why use Pytorch  
 
 作为训练项目，使用Pytorch训练完整的深度学习流程  
