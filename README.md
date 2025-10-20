@@ -28,7 +28,11 @@ url：<https://www.kaggle.com/competitions/house-prices-advanced-regression-tech
 
 此部分代码位于./code/train_v1.py  
 
-未完待续...
+分析需求可知此题要求拟合各类边缘数据对房价的影响关系，其实可以选择更加简单精准的方法，但是最终还是选择了基于Pytorch的神经网络，通过深度学习来拟合此曲线  
+
+首先对题目复杂度进行评估，最终选择三层全连接网络进行训练（其实可以用更小的网络完成相同工作），并且由于训练样本数量并不多，选择Dropout方式训练出现过拟合状况
+
+具体实现见./code/train_v1.py
 
 ## 为什么使用Pytorch  
 

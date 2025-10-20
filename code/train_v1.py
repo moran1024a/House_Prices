@@ -10,18 +10,22 @@ from torch.utils.data import TensorDataset, DataLoader
 
 from data_read import get_train_data, get_test_data
 
-
+# 定义神经网络模型（继承自nn.Module）
 class Net_work_v1(nn.Module):
     def __init__(self, input_N):
+        # 初始化父类
         super(Net_work_v1, self).__init__()
 
+        # 全连接层（3层）
         self.fc1 = nn.Linear(input_N, 128)
         self.fc2 = nn.Linear(128, 64)
         self.fc3 = nn.Linear(64, 1)
 
+        # Dropout层（防止过拟合）
         self.dropout1 = nn.Dropout(0.5)
         self.dropout2 = nn.Dropout(0.3)
 
+    # 向前传播
     def forward(self, x):
 
         x = self.fc1(x)
