@@ -46,7 +46,7 @@ class Net_work_v1(nn.Module):
 # 超参数
 lr = 0.001
 batch_size = 64
-epochs = 500
+epochs = 2000
 
 # 加载数据
 x_train_df, y_train_s = get_train_data()
