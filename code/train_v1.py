@@ -52,20 +52,22 @@ epochs = 2000
 x_train_df, y_train_s = get_train_data()
 x_test_df, test_ids = get_test_data()
 
-# 转换数据给torch用
+# 转换数据给torch用，即数据张量化（并且重塑标签形状）
 x_train = torch.tensor(x_train_df.astype(np.float32).values)
 y_train = torch.tensor(y_train_s.astype(np.float32).values).view(-1, 1)
 x_test = torch.tensor(x_test_df.astype(np.float32).values)
 
 # 构建数据加载器
+# TensorDataset用于将数据和标签打包，返回一个数据集对象，能直接通过索引获取数据和标签对
 train_dataset = TensorDataset(x_train, y_train)
+# DataLoader用于将数据集进行批处理，并且支持乱序
 train_loader = DataLoader(dataset=train_dataset,
                           batch_size=batch_size, shuffle=True)
 
 # 初始化模型、损失函数和优化器
 model = Net_work_v1(input_N=x_train.shape[1])
 criterion = nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=lr)
+optimizer = optim.Adam(model.parameters(), lr=lr) # model.parameters()获取模型的所有可更新的参数
 
 
 print("\n显卡嗷嗷叫环节")
@@ -75,6 +77,7 @@ start_time = time.time()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("使用设备:", device)
 
+# 将模型移到GPU
 model.to(device)
 
 for epoch in range(epochs):
@@ -86,7 +89,7 @@ for epoch in range(epochs):
 
     for inputs, targets in train_loader:
 
-        # 移动数据
+        # 移动数据到GPU
         inputs, targets = inputs.to(device), targets.to(device)
 
         # 清除梯度
@@ -120,14 +123,16 @@ print(f"Finish,time: {(end_time - start_time):.2f}")
 print("\n生成预测文件")
 # 顺序模式~
 model.eval()
+# 关闭梯度计算以节省内存和计算资源
 with torch.no_grad():
     # 转换测试数据给cuda
     x_test = x_test.to(device)
+    # 进行预测（向前传播）
     predictions_log = model(x_test)
 
 # 将结果移回CPU以便使用Numpy
 predictions_log_cpu = predictions_log.cpu()
-predictions = np.expm1(predictions_log_cpu.numpy().flatten())
+predictions = np.expm1(predictions_log_cpu.numpy().flatten()) # 转换为ndarray并还原对数变换、展平
 submission = pd.DataFrame({'Id': test_ids, 'SalePrice': predictions})
 submission.to_csv('submission.csv', index=False)
 print("提交文件 'submission.csv' 已生成！")
